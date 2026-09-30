@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Admin Portal - SISKOHAT KOTA SORONG</title>
+  
+  <!-- Favicon Logo.ico -->
+  <link rel="icon" type="image/x-icon" href="Logo.ico">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            gold: {
+              500: '#d4af37',
+              600: '#b89327',
+              700: '#997519',
+            },
+            brown: {
+              900: '#26150a',
+              950: '#140a04',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#FAF7F2] text-slate-800 min-h-screen flex items-center justify-center p-4">
+
+  <!-- ================= FORM LOGIN (TERANG / LIGHT MODE) ================= -->
+  <div id="loginCard" class="w-full max-w-sm bg-white border border-brown-200 rounded-3xl p-6 shadow-xl">
+    <div class="text-center mb-6">
+      <div class="w-14 h-14 rounded-full p-0.5 bg-gradient-to-tr from-gold-600 to-amber-300 mx-auto mb-3 shadow-md flex items-center justify-center">
+        <img src="logo.png" alt="Logo Kemenhaj" class="w-full h-full object-contain rounded-full" onerror="this.onerror=null; this.src='Logo Kementerian Haji.png';" />
+      </div>
+      <h2 class="text-base font-bold text-brown-900 tracking-tight">Portal Admin SISKOHAT</h2>
+      <p class="text-[11px] text-gold-700 mt-0.5 italic font-medium">"Layani, Bimbing dan Berangkatkan"</p>
+      <p class="text-[10px] text-stone-500 mt-1">Kementerian Haji dan Umrah Kota Sorong</p>
+    </div>
+
+    <form id="loginForm" class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold text-stone-700 mb-1.5">Username</label>
+        <div class="relative">
+          <i data-lucide="user" class="w-4 h-4 text-stone-400 absolute left-3.5 top-3.5"></i>
+          <input type="text" id="usernameInput" required placeholder="admin" autocomplete="username" class="w-full pl-10 pr-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-gold-500" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-stone-700 mb-1.5">Password</label>
+        <div class="relative">
+          <i data-lucide="lock" class="w-4 h-4 text-stone-400 absolute left-3.5 top-3.5"></i>
+          <input type="password" id="passwordInput" required placeholder="••••••••" autocomplete="current-password" class="w-full pl-10 pr-3 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-gold-500" />
+        </div>
+      </div>
+
+      <div id="loginAlert" class="hidden p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs text-center font-medium">
+        Username atau password salah!
+      </div>
+
+      <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-gold-600 to-amber-600 hover:from-gold-700 hover:to-amber-700 text-white font-black rounded-xl text-xs shadow-md shadow-gold-600/20 active:scale-98 transition">
+        Masuk Portal
+      </button>
+    </form>
+    
+    <div class="mt-5 text-center">
+      <a href="index.html" class="text-xs text-stone-600 hover:text-stone-900 inline-flex items-center gap-1 transition">
+        <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Kembali ke Dashboard
+      </a>
+      <p class="text-[10px] text-stone-400 mt-3 font-semibold">&copy;CikibomTeam</p>
+    </div>
+  </div>
+
+  <!-- ================= PANEL PENGOLAHAN EXCEL (TERANG / LIGHT MODE) ================= -->
+  <div id="adminPanel" class="w-full max-w-md bg-white border border-brown-200 rounded-3xl p-6 shadow-xl hidden space-y-4">
+    <div class="flex items-center justify-between pb-3 border-b border-stone-200">
+      <div>
+        <h2 class="text-base font-bold text-brown-900 leading-tight">Pengolah Database Terpadu</h2>
+        <p class="text-[11px] text-emerald-600 flex items-center gap-1 font-semibold mt-0.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Admin Terautentikasi
+        </p>
+      </div>
+      <button id="logoutBtn" class="px-2.5 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 border border-stone-200">
+        <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Keluar
+      </button>
+    </div>
+
+    <!-- AREA 1: REKAP TABUNGAN -->
+    <div>
+      <label class="block text-xs font-semibold text-stone-700 mb-1.5">1. File Rekap Tabungan Aktif (Excel)</label>
+      <label for="excelRekap" class="border border-dashed border-stone-300 hover:border-gold-500 bg-stone-50 rounded-xl p-3 flex items-center justify-between cursor-pointer transition">
+        <div class="flex items-center gap-2.5">
+          <i data-lucide="wallet" class="w-5 h-5 text-gold-600"></i>
+          <div>
+            <span id="nameRekap" class="text-xs font-semibold text-stone-800 block truncate max-w-[200px]">Rekap_Tabungan.xlsx</span>
+            <span id="statusRekap" class="text-[10px] text-stone-500">Belum dipilih</span>
+          </div>
+        </div>
+        <span class="px-2.5 py-1 rounded bg-white text-[10px] font-bold text-gold-700 border border-stone-200 shadow-xs">Pilih</span>
+        <input type="file" id="excelRekap" accept=".xlsx, .xls" class="hidden" />
+      </label>
+    </div>
+
+    <!-- AREA 2: DATA MASTER VERIFIKASI -->
+    <div>
+      <label class="block text-xs font-semibold text-stone-700 mb-1.5">2. File Data Master Verifikasi Tahun Ini (Excel)</label>
+      <label for="excelMaster" class="border border-dashed border-stone-300 hover:border-gold-500 bg-stone-50 rounded-xl p-3 flex items-center justify-between cursor-pointer transition">
+        <div class="flex items-center gap-2.5">
+          <i data-lucide="plane-takeoff" class="w-5 h-5 text-gold-600"></i>
+          <div>
+            <span id="nameMaster" class="text-xs font-semibold text-stone-800 block truncate max-w-[200px]">Data Master V1.xlsx</span>
+            <span id="statusMaster" class="text-[10px] text-stone-500">Belum dipilih</span>
+          </div>
+        </div>
+        <span class="px-2.5 py-1 rounded bg-white text-[10px] font-bold text-gold-700 border border-stone-200 shadow-xs">Pilih</span>
+        <input type="file" id="excelMaster" accept=".xlsx, .xls" class="hidden" />
+      </label>
+    </div>
+
+    <!-- STATUS PEMROSESAN -->
+    <div id="processBox" class="p-3 rounded-2xl bg-stone-50 border border-stone-200 space-y-2 text-xs">
+      <div class="flex justify-between text-stone-700">
+        <span>Rekap Tabungan:</span>
+        <strong id="countRekap" class="text-gold-700 font-mono">0 baris</strong>
+      </div>
+      <div class="flex justify-between text-stone-700">
+        <span>Verifikasi 2026:</span>
+        <strong id="countMaster" class="text-gold-700 font-mono">0 baris</strong>
+      </div>
+
+      <button id="downloadBtn" disabled class="mt-2 w-full py-2.5 rounded-xl bg-gradient-to-r from-gold-600 to-amber-600 hover:from-gold-700 hover:to-amber-700 text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-md shadow-gold-600/25 transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed">
+        <i data-lucide="download" class="w-4 h-4"></i> Proses & Simpan data.js Terpadu
+      </button>
+    </div>
+
+    <div class="pt-1 text-center">
+      <a href="index.html" class="text-xs text-gold-700 font-semibold hover:underline inline-flex items-center gap-1">
+        Buka Dashboard Publik <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+      </a>
+      <p class="text-[10px] text-stone-400 mt-2 font-semibold">&copy;CikibomTeam</p>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT ADMIN ================= -->
+  <script>
+    lucide.createIcons();
+
+    const CORRECT_USER = "admin";
+    const CORRECT_PASS_HASH = "8e76fa9804663e43f1ba734174a8accee5c21ff248249438d7dbba97533bbf28";
+
+    async function sha256(text) {
+      const msgBuffer = new TextEncoder().encode(text);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    if (sessionStorage.getItem('siskohat_admin_auth') === 'true') {
+      showAdminPanel();
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const user = document.getElementById('usernameInput').value.trim();
+      const pass = document.getElementById('passwordInput').value;
+      const hash = await sha256(pass);
+
+      if (user === CORRECT_USER && hash === CORRECT_PASS_HASH) {
+        sessionStorage.setItem('siskohat_admin_auth', 'true');
+        showAdminPanel();
+      } else {
+        document.getElementById('loginAlert').classList.remove('hidden');
+      }
+    });
+
+    function showAdminPanel() {
+      document.getElementById('loginCard').classList.add('hidden');
+      document.getElementById('adminPanel').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      sessionStorage.removeItem('siskohat_admin_auth');
+      window.location.reload();
+    });
+
+    let parsedRekap = [];
+    let parsedMaster = [];
+
+    document.getElementById('excelRekap').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      document.getElementById('nameRekap').innerText = file.name;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const data = new Uint8Array(evt.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.SheetNames[0];
+          const rawRows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+
+          parsedRekap = rawRows.map(r => ({
+            porsi: String(r['No. Porsi'] || '').trim(),
+            spph: String(r['No. Spph'] || '-').trim(),
+            nama: String(r['Nama'] || '').trim(),
+            ayah: String(r['Nama Ayah'] || '-').trim(),
+            jk: String(r['Jenis Kelamin'] || '').trim(),
+            pekerjaan: String(r['Pekerjaan'] || '-').trim(),
+            pendidikan: String(r['Pendidikan'] || '-').trim(),
+            tempat_lahir: String(r['Tempat Lahir'] || '-').trim(),
+            tgl_lahir: String(r['Tgl Lahir'] || '-').trim(),
+            tgl: String(r['Tgl Daftar'] || '').trim(),
+            desa: String(r['Desa'] || '-').trim(),
+            kec: String(r['Kecamatan'] || 'SORONG').trim(),
+            bank: String(r['Bank'] || '').trim(),
+            s_haji: String(r['S. Haji'] || 'BELUM').trim(),
+            setoran: String(r['Jml Setoran'] || '25.000.000,00').trim(),
+            hp: String(r['No. HP'] || '-').trim()
+          }));
+
+          document.getElementById('statusRekap').innerText = `${parsedRekap.length} data terbaca`;
+          document.getElementById('countRekap').innerText = `${parsedRekap.length} porsi`;
+          checkCanDownload();
+        } catch (err) {
+          alert('Gagal membaca Rekap Tabungan.');
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    });
+
+    document.getElementById('excelMaster').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      document.getElementById('nameMaster').innerText = file.name;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const data = new Uint8Array(evt.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.SheetNames[0];
+          const rows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], { header: 1 });
+
+          parsedMaster = [];
+          let currentCat = 'REGULER';
+
+          rows.forEach(r => {
+            const col0 = String(r[0] || '').trim().toUpperCase();
+            const col1 = String(r[1] || '').trim();
+
+            if (col0.includes('JAMAAH REGULER')) { currentCat = 'REGULER'; return; }
+            if (col0.includes('LANSIA')) { currentCat = 'LANSIA'; return; }
+            if (col0.includes('CADANGAN')) { currentCat = 'CADANGAN'; return; }
+            if (col0.includes('MAHRAM')) { currentCat = 'MAHRAM'; return; }
+            if (col0.includes('MUTASI')) { currentCat = 'MUTASI'; return; }
+
+            if (col0 === 'NO' || col1.toUpperCase().includes('NOMOR PORSI')) return;
+
+            const pClean = col1.replace('.0', '').trim();
+            if (pClean && !isNaN(pClean) && pClean.length > 5) {
+              parsedMaster.push({
+                kategori: currentCat,
+                porsi: pClean,
+                nama: String(r[2] || '').trim(),
+                ayah: String(r[3] || '').trim(),
+                status_berangkat: String(r[4] || 'BELUM ADA STATUS').trim().toUpperCase(),
+                admin: {
+                  PASPOR: String(r[5] || '').trim(),
+                  'KIRIM PASPOR': String(r[6] || '').trim(),
+                  VISABIO: String(r[7] || '').trim(),
+                  'UPLOAD VISABIO': String(r[8] || '').trim(),
+                  FOTO: String(r[9] || '').trim(),
+                  'UPLOAD FOTO': String(r[10] || '').trim(),
+                  KESEHATAN: String(r[11] || '').trim(),
+                  ISTITAAH: String(r[12] || '').trim(),
+                  PELUNASAN: String(r[13] || '').trim(),
+                  'JENIS JAMAAH': String(r[14] || '').trim(),
+                  KETERANGAN: String(r[15] || '').trim()
+                }
+              });
+            }
+          });
+
+          document.getElementById('statusMaster').innerText = `${parsedMaster.length} data terbaca`;
+          document.getElementById('countMaster').innerText = `${parsedMaster.length} calon jamaah`;
+          checkCanDownload();
+        } catch (err) {
+          alert('Gagal membaca Data Master Verifikasi.');
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    });
+
+    function checkCanDownload() {
+      const btn = document.getElementById('downloadBtn');
+      if (parsedRekap.length > 0 || parsedMaster.length > 0) {
+        btn.disabled = false;
+      }
+    }
+
+    document.getElementById('downloadBtn').addEventListener('click', function() {
+      const verifMap = {};
+      parsedMaster.forEach(v => { verifMap[v.porsi] = v; });
+
+      const rekapMap = {};
+      parsedRekap.forEach(r => { rekapMap[r.porsi] = r; });
+
+      const enrichedRekap = parsedRekap.map(r => {
+        const v = verifMap[r.porsi];
+        return {
+          ...r,
+          verif: v ? {
+            kategori: v.kategori,
+            status: v.status_berangkat,
+            paspor: v.admin.PASPOR
+          } : null
+        };
+      });
+
+      const enrichedVerif = parsedMaster.map(v => {
+        const r = rekapMap[v.porsi] || {};
+        return {
+          ...v,
+          nama: v.nama || r.nama || '-',
+          ayah: v.ayah || r.ayah || '-',
+          rekap: {
+            jk: r.jk || '-',
+            tempat_lahir: r.tempat_lahir || '-',
+            tgl_lahir: r.tgl_lahir || '-',
+            desa: r.desa || '-',
+            kec: r.kec || 'SORONG',
+            bank: r.bank || '-',
+            tgl: r.tgl || '-',
+            pekerjaan: r.pekerjaan || '-',
+            hp: r.hp || '-'
+          }
+        };
+      });
+
+      const content = `// Database SISKOHAT Kota Sorong Terpadu
+// Kementerian Haji dan Umrah Kota Sorong
+window.DATABASE_JAMAAH = ${JSON.stringify(enrichedRekap)};
+window.DATABASE_VERIF = ${JSON.stringify(enrichedVerif)};
+`;
+
+      const blob = new Blob([content], { type: 'application/javascript;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'data.js';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>

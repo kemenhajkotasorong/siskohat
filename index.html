@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SISKOHAT KOTA SORONG - Kementerian Haji dan Umrah</title>
+  
+  <!-- Favicon Logo.ico -->
+  <link rel="icon" type="image/x-icon" href="Logo.ico">
+
+  <!-- Tailwind CSS & Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js & Lucide Icons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Database Terpadu -->
+  <script src="data.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { 
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            gold: {
+              50: '#fffdf5',
+              100: '#fef7da',
+              200: '#fdeeaa',
+              300: '#fce371',
+              400: '#f5d03b',
+              500: '#d4af37',
+              600: '#b89327',
+              700: '#997519',
+              800: '#755810',
+              900: '#4d3907',
+            },
+            brown: {
+              50: '#faf6f2',
+              100: '#f2e8dc',
+              200: '#e5d3c0',
+              300: '#cca98e',
+              400: '#b27f5c',
+              600: '#7a4f31',
+              700: '#5c3921',
+              800: '#3e2413',
+              900: '#26150a',
+              950: '#140a04',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { -webkit-tap-highlight-color: transparent; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .bottom-sheet { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+  </style>
+</head>
+<body class="bg-[#FAF7F2] dark:bg-brown-950 text-slate-800 dark:text-stone-100 min-h-screen pb-24 transition-colors duration-200">
+
+  <!-- ================= TOP APP BAR ================= -->
+  <header class="sticky top-0 z-30 bg-[#FAF7F2]/90 dark:bg-brown-950/90 backdrop-blur-md border-b border-brown-100 dark:border-brown-900 px-4 py-2.5 shadow-xs">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <!-- Logo Menggunakan Logo.ico / logo.png -->
+        <div class="w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-gold-600 via-gold-400 to-amber-200 shadow-md shadow-gold-500/20 flex items-center justify-center shrink-0">
+          <img src="logo.png" alt="Logo Kemenhaj" class="w-full h-full object-contain rounded-full" onerror="this.onerror=null; this.src='Logo Kementerian Haji.png';" />
+        </div>
+        <div>
+          <h1 class="text-[13px] font-black tracking-tight text-brown-900 dark:text-gold-400 leading-tight">SISKOHAT KOTA SORONG</h1>
+          <p class="text-[10px] text-brown-700 dark:text-stone-400 font-semibold">Dashboard Kemenhaj Kota Sorong</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center space-x-2">
+        <button id="themeToggle" class="w-9 h-9 rounded-full bg-brown-100/70 dark:bg-brown-900/80 flex items-center justify-center text-brown-800 dark:text-gold-400 border border-brown-200 dark:border-brown-800 transition">
+          <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
+          <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="max-w-md mx-auto px-4 pt-3">
+
+    <!-- SPANDUK PERINGATAN JIKA DATA.JS BELUM ADA -->
+    <div id="dataWarningBanner" class="hidden mb-3.5 p-3 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-900 dark:text-amber-200 text-xs shadow-sm">
+      <div class="flex items-start gap-2">
+        <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+        <div>
+          <strong class="font-bold block">File `data.js` Belum Terdeteksi!</strong>
+          <span class="text-[11px] block mt-0.5">Buka file <strong>admin.html</strong> di laptop Anda untuk memproses file Excel menjadi `data.js`.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slogan Resmi Kementerian Haji -->
+    <div class="mb-3.5 px-3.5 py-2 rounded-2xl bg-gradient-to-r from-brown-900 via-brown-800 to-brown-900 border border-gold-500/40 text-white flex items-center justify-between shadow-md">
+      <div class="flex items-center gap-2">
+        <span class="p-1 rounded-lg bg-gold-500/20 text-gold-400">
+          <i data-lucide="award" class="w-3.5 h-3.5"></i>
+        </span>
+        <div>
+          <span class="text-[11px] font-bold text-gold-300 tracking-wide block italic">"Layani, Bimbing dan Berangkatkan"</span>
+          <span class="text-[9px] text-stone-300 block">Kementerian Haji dan Umrah RI</span>
+        </div>
+      </div>
+      <span id="verifBadgeCount" class="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-gold-500 text-brown-950 font-mono">0 Nominasi</span>
+    </div>
+
+    <!-- ================= TAB 1: DASHBOARD ================= -->
+    <div id="view-dashboard" class="space-y-3.5 tab-content">
+      
+      <!-- 4 TOP KPI CARDS -->
+      <div class="grid grid-cols-2 gap-2.5">
+        <div class="bg-white dark:bg-brown-900/80 p-3.5 rounded-2xl border border-brown-100 dark:border-brown-800/80 shadow-xs relative overflow-hidden">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-semibold text-stone-500 dark:text-stone-400">Total Terdaftar</span>
+            <div class="p-1.5 rounded-xl bg-gold-50 dark:bg-gold-950/60 text-gold-600 dark:text-gold-400">
+              <i data-lucide="users" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div id="kpiTotalJamaah" class="text-xl font-extrabold text-brown-900 dark:text-white font-mono">0</div>
+          <div class="text-[10px] text-gold-600 dark:text-gold-400 font-bold mt-0.5">Porsi Tabungan Aktif</div>
+        </div>
+
+        <div class="bg-white dark:bg-brown-900/80 p-3.5 rounded-2xl border border-brown-100 dark:border-brown-800/80 shadow-xs relative overflow-hidden">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-semibold text-stone-500 dark:text-stone-400">Rasio Gender</span>
+            <div class="p-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400">
+              <i data-lucide="user-check" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div id="kpiGender" class="text-base font-extrabold text-brown-900 dark:text-white">- / -</div>
+          <div id="kpiGenderRatio" class="text-[10px] text-amber-600 dark:text-amber-400 font-bold mt-0.5">0% P • 0% L</div>
+        </div>
+
+        <div class="bg-white dark:bg-brown-900/80 p-3.5 rounded-2xl border border-brown-100 dark:border-brown-800/80 shadow-xs relative overflow-hidden">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-semibold text-stone-500 dark:text-stone-400">Kuota 2026</span>
+            <div class="p-1.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
+              <i data-lucide="plane" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div id="kpiKuota" class="text-xl font-extrabold text-brown-900 dark:text-white font-mono">0</div>
+          <div class="text-[10px] text-blue-600 dark:text-blue-400 font-bold mt-0.5">Porsi Nominasi Berangkat</div>
+        </div>
+
+        <div class="bg-white dark:bg-brown-900/80 p-3.5 rounded-2xl border border-brown-100 dark:border-brown-800/80 shadow-xs relative overflow-hidden">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-semibold text-stone-500 dark:text-stone-400">Kesiapan Lapangan</span>
+            <div class="p-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
+              <i data-lucide="shield-check" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div id="kpiKesiapan" class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">0 SIAP</div>
+          <div id="kpiKesiapanPct" class="text-[10px] text-emerald-700 dark:text-emerald-300 font-bold mt-0.5">0% Terkonfirmasi Siap</div>
+        </div>
+      </div>
+
+      <!-- GRAFIK 1: TREN TAHUNAN -->
+      <div class="bg-white dark:bg-brown-900/80 p-4 rounded-2xl border border-brown-100 dark:border-brown-800/80 shadow-xs">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-xs font-bold text-brown-900 dark:text-gold-300 uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="trending-up" class="w-4 h-4 text-gold-500"></i> Tren Pendaftaran Tahunan
+          </h2>
+          <span class="text-[10px] text-stone-400 font-mono">2008 - 2026</span>
+        </div>
+        <div class="h-48 w-full relative">
+          <canvas id="chartYear"></canvas>
+        </div>
+      </div>
+
+      <!-- GRAFIK 2: SEBARAN BANK -->
+      <div class="bg-white dark:bg-brown-900/80 p-4 rounded-2xl border border-brown-100 dark:border-brown-800/80 shadow-xs">
+        <h2 class="text-xs font-bold text-brown-900 dark:text-gold-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+          <i data-lucide="pie-chart" class="w-4 h-4 text-gold-500"></i> Distribusi Bank Penerima (BPS BPIH)
+        </h2>
+        <div class="h-48 w-full relative flex items-center justify-center">
+          <canvas id="chartBank"></canvas>
+        </div>
+      </div>
+
+      <!-- GRAFIK 3: PEKERJAAN -->
+      <div class="bg-white dark:bg-brown-900/80 p-4 rounded-2xl border border-brown-100 dark:border-brown-800/80 shadow-xs">
+        <h2 class="text-xs font-bold text-brown-900 dark:text-gold-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+          <i data-lucide="briefcase" class="w-4 h-4 text-gold-500"></i> 5 Profesi Terbanyak
+        </h2>
+        <div class="h-48 w-full relative">
+          <canvas id="chartJob"></canvas>
+        </div>
+      </div>
+
+      <!-- SEBARAN KECAMATAN -->
+      <div class="bg-white dark:bg-brown-900/80 p-4 rounded-2xl border border-brown-100 dark:border-brown-800/80 shadow-xs">
+        <h2 class="text-xs font-bold text-brown-900 dark:text-gold-300 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+          <i data-lucide="map-pin" class="w-4 h-4 text-gold-500"></i> Sebaran Kecamatan Kota Sorong
+        </h2>
+        <div id="kecamatanList" class="space-y-3"></div>
+      </div>
+
+      <footer class="pt-4 pb-2 text-center border-t border-brown-100 dark:border-brown-900">
+        <p class="text-[11px] font-bold text-brown-800 dark:text-gold-400 tracking-wide">&copy;CikibomTeam</p>
+        <p class="text-[10px] text-stone-500 dark:text-stone-400 mt-0.5">Kementerian Haji dan Umrah Kota Sorong</p>
+      </footer>
+    </div>
+
+    <!-- ================= TAB 2: DATA JAMAAH ================= -->
+    <div id="view-jamaah" class="space-y-3 tab-content hidden">
+      <div class="relative">
+        <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3.5 top-3.5"></i>
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="Cari Nama, No Porsi, atau Kelurahan..." 
+          class="w-full pl-10 pr-10 py-2.5 bg-white dark:bg-brown-900/90 border border-brown-200 dark:border-brown-800 rounded-xl text-xs text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-gold-500 shadow-xs"
+        />
+        <button id="clearSearchBtn" class="hidden absolute right-3 top-3 text-stone-400 hover:text-stone-600">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <select id="filterBank" class="px-2.5 py-1.5 bg-white dark:bg-brown-900 border border-brown-200 dark:border-brown-800 rounded-lg text-[11px] text-stone-700 dark:text-stone-200 focus:outline-none">
+          <option value="">Semua Bank</option>
+          <option value="MUAMALAT">Bank Muamalat</option>
+          <option value="SYARIAH IND">BSI</option>
+          <option value="NANO">Nano Syariah</option>
+          <option value="PANIN">Panin Dubai Syariah</option>
+        </select>
+
+        <select id="filterGender" class="px-2.5 py-1.5 bg-white dark:bg-brown-900 border border-brown-200 dark:border-brown-800 rounded-lg text-[11px] text-stone-700 dark:text-stone-200 focus:outline-none">
+          <option value="">Semua Gender</option>
+          <option value="L">Laki-Laki (L)</option>
+          <option value="P">Perempuan (P)</option>
+        </select>
+
+        <select id="filterYear" class="px-2.5 py-1.5 bg-white dark:bg-brown-900 border border-brown-200 dark:border-brown-800 rounded-lg text-[11px] text-stone-700 dark:text-stone-200 focus:outline-none">
+          <option value="">Semua Tahun</option>
+        </select>
+
+        <select id="filterMonth" class="px-2.5 py-1.5 bg-white dark:bg-brown-900 border border-brown-200 dark:border-brown-800 rounded-lg text-[11px] text-stone-700 dark:text-stone-200 focus:outline-none">
+          <option value="">Semua Bulan</option>
+          <option value="01">Januari (01)</option>
+          <option value="02">Februari (02)</option>
+          <option value="03">Maret (03)</option>
+          <option value="04">April (04)</option>
+          <option value="05">Mei (05)</option>
+          <option value="06">Juni (06)</option>
+          <option value="07">Juli (07)</option>
+          <option value="08">Agustus (08)</option>
+          <option value="09">September (09)</option>
+          <option value="10">Oktober (10)</option>
+          <option value="11">November (11)</option>
+          <option value="12">Desember (12)</option>
+        </select>
+      </div>
+
+      <div class="flex items-center justify-between text-[11px] text-stone-500 px-1">
+        <span>Menampilkan <strong id="resultCount" class="text-brown-900 dark:text-gold-300 font-semibold">0</strong> jamaah</span>
+        <span class="text-[10px]">Ketuk kartu untuk detail</span>
+      </div>
+
+      <div id="jamaahListContainer" class="space-y-2"></div>
+
+      <div id="paginationControls" class="flex items-center justify-between pt-3 pb-6">
+        <button id="prevPageBtn" class="px-3 py-1.5 rounded-lg bg-white dark:bg-brown-900 border border-brown-200 dark:border-brown-800 text-xs font-semibold text-stone-700 dark:text-stone-300 disabled:opacity-30">
+          Sebelumnya
+        </button>
+        <span id="pageIndicator" class="text-xs text-stone-500 font-medium">Hal 1</span>
+        <button id="nextPageBtn" class="px-3 py-1.5 rounded-lg bg-white dark:bg-brown-900 border border-brown-200 dark:border-brown-800 text-xs font-semibold text-stone-700 dark:text-stone-300 disabled:opacity-30">
+          Selanjutnya
+        </button>
+      </div>
+
+      <footer class="pt-2 pb-4 text-center">
+        <p class="text-[11px] font-bold text-brown-800 dark:text-gold-400">&copy;CikibomTeam</p>
+      </footer>
+    </div>
+
+    <!-- ================= TAB 3: VERIFIKASI (BARIS 2 KLIK -> BARIS 3 MENYESUAIKAN) ================= -->
+    <div id="view-verif" class="space-y-3.5 tab-content hidden">
+      
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xs font-bold text-brown-900 dark:text-gold-300 uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="plane-takeoff" class="w-4 h-4 text-gold-500"></i> Nominasi Berangkat 2026
+          </h2>
+          <p class="text-[11px] text-stone-500">Kendali Dokumen & Kesiapan Administrasi</p>
+        </div>
+        <button id="resetVerifFilterBtn" class="text-[10px] font-bold text-gold-700 dark:text-gold-300 bg-gold-50 dark:bg-gold-950/70 px-2.5 py-1 rounded-lg border border-gold-300 dark:border-gold-800 flex items-center gap-1 active:scale-95 transition">
+          <i data-lucide="rotate-ccw" class="w-3 h-3"></i> Reset
+        </button>
+      </div>
+
+      <div id="verifActiveFilterBar" class="hidden px-3 py-1.5 bg-amber-50 dark:bg-brown-900 border border-gold-400/50 rounded-xl text-[11px] text-gold-800 dark:text-gold-300 flex items-center justify-between">
+        <span id="verifFilterText">Filter Aktif: -</span>
+        <span class="font-bold underline cursor-pointer" onclick="resetVerifFilters()">Hapus</span>
+      </div>
+
+      <!-- BARIS 1: KUOTA KATEGORI JAMAAH -->
+      <div class="bg-white dark:bg-brown-900/80 p-3.5 rounded-2xl border border-brown-100 dark:border-brown-800/80 shadow-xs">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">1. Kuota Kategori Jamaah</span>
+          <span class="text-[10px] text-gold-600 dark:text-gold-400 font-semibold" id="labelActiveKategori">Pilihan: Semua</span>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-1.5" id="verifCategoryFilterGroup">
+          <button onclick="setVerifKategori('SEMUA')" class="verif-cat-btn py-2 px-1.5 rounded-xl border transition text-center cursor-pointer active:scale-95" data-cat="SEMUA">
+            <span class="text-[10px] block leading-tight font-medium opacity-80">Total</span>
+            <span id="cntCatAll" class="text-sm font-extrabold block">0</span>
+          </button>
+          <button onclick="setVerifKategori('REGULER')" class="verif-cat-btn py-2 px-1.5 rounded-xl border transition text-center cursor-pointer active:scale-95" data-cat="REGULER">
+            <span class="text-[10px] block leading-tight font-medium opacity-80">Reguler</span>
+            <span id="cntCatReguler" class="text-sm font-extrabold block">0</span>
+          </button>
+          <button onclick="setVerifKategori('LANSIA')" class="verif-cat-btn py-2 px-1.5 rounded-xl border transition text-center cursor-pointer active:scale-95" data-cat="LANSIA">
+            <span class="text-[10px] block leading-tight font-medium opacity-80">Lansia</span>
+            <span id="cntCatLansia" class="text-sm font-extrabold block">0</span>
+          </button>
+          <button onclick="setVerifKategori('MAHRAM')" class="verif-cat-btn py-2 px-1.5 rounded-xl border transition text-center cursor-pointer active:scale-95" data-cat="MAHRAM">
+            <span class="text-[10px] block leading-tight font-medium opacity-80">Mahram</span>
+            <span id="cntCatMahram" class="text-sm font-extrabold block">0</span>
+          </button>
+          <button onclick="setVerifKategori('CADANGAN')" class="verif-cat-btn py-2 px-1.5 rounded-xl border transition text-center cursor-pointer active:scale-95" data-cat="CADANGAN">
+            <span class="text-[10px] block leading-tight font-medium opacity-80">Cadangan</span>
+            <span id="cntCatCadangan" class="text-sm font-extrabold block">0</span>
+          </button>
+          <button onclick="setVerifKategori('MUTASI')" class="verif-cat-btn py-2 px-1.5 rounded-xl border transition text-center cursor-pointer active:scale-95" data-cat="MUTASI">
+            <span class="text-[10px] block leading-tight font-medium opacity-80">Mutasi</span>
+            <span id="cntCatMutasi" class="text-sm font-extrabold block">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- BARIS 2: STATUS KESIAPAN LAPANGAN (KLIK DISINI AKAN MEMBUAT BARIS 3 MENYESUAIKAN) -->
+      <div class="bg-white dark:bg-brown-900/80 p-3.5 rounded-2xl border border-brown-100 dark:border-brown-800/80 shadow-xs">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">2. Status Kesiapan Lapangan (Klik untuk saring Baris 3)</span>
+          <span class="text-[10px] text-stone-400 font-medium" id="labelKategoriInfoSt">Kategori: Semua (0)</span>
+        </div>
+        
+        <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar pb-1" id="verifStatusFilterGroup">
+          <button onclick="setVerifStatus('SEMUA')" class="verif-st-btn active px-3 py-1.5 rounded-xl text-xs font-bold border border-brown-300 dark:border-brown-700 bg-brown-900 text-gold-300 dark:bg-gold-500 dark:text-brown-950 shrink-0 cursor-pointer active:scale-95 transition" data-status="SEMUA">
+            Semua (<span id="stAll">0</span>)
+          </button>
+          <button onclick="setVerifStatus('SIAP')" class="verif-st-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 shrink-0 cursor-pointer active:scale-95 transition" data-status="SIAP">
+            SIAP (<span id="stSiap">0</span>)
+          </button>
+          <button onclick="setVerifStatus('TUNDA')" class="verif-st-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-rose-300 dark:border-rose-800 bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 shrink-0 cursor-pointer active:scale-95 transition" data-status="TUNDA">
+            TUNDA (<span id="stTunda">0</span>)
+          </button>
+          <button onclick="setVerifStatus('BELUM BISA DI HUBUNGI')" class="verif-st-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 shrink-0 cursor-pointer active:scale-95 transition" data-status="BELUM BISA DI HUBUNGI">
+            BLM DIHUBUNGI (<span id="stBlm">0</span>)
+          </button>
+          <button onclick="setVerifStatus('PORSI BATU')" class="verif-st-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-stone-300 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 shrink-0 cursor-pointer active:scale-95 transition" data-status="PORSI BATU">
+            PORSI BATU (<span id="stBatu">0</span>)
+          </button>
+          <button onclick="setVerifStatus('BERMASALAH')" class="verif-st-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-red-300 dark:border-red-800 bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 shrink-0 cursor-pointer active:scale-95 transition" data-status="BERMASALAH">
+            BERMASALAH (<span id="stMasalah">0</span>)
+          </button>
+        </div>
+      </div>
+
+      <!-- BARIS 3: PROGRESS ADMINISTRASI KOTA (OTOMATIS MENYESUAIKAN PILIHAN BARIS 1 & BARIS 2) -->
+      <div class="bg-white dark:bg-brown-900/80 p-3.5 rounded-2xl border border-brown-100 dark:border-brown-800/80 shadow-xs">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">3. Progress Administrasi (Sudah Lengkap)</span>
+          <span class="text-[10px] text-stone-400 font-medium" id="labelKategoriInfoDoc">Terhadap: Semua (0)</span>
+        </div>
+        
+        <div class="space-y-2" id="verifAdminProgressList">
+          <div onclick="filterByAdminDoc('PASPOR')" id="docItem_PASPOR" class="verif-doc-item p-2 rounded-xl bg-brown-50/60 dark:bg-brown-950/50 border border-brown-100 dark:border-brown-800/60 cursor-pointer active:scale-98 transition">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-semibold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
+                <i data-lucide="book-marked" class="w-3.5 h-3.5 text-gold-600"></i> Paspor
+              </span>
+              <span class="text-[11px] font-bold text-stone-700 dark:text-stone-300" id="progressPasporText">0 / 0 (0%)</span>
+            </div>
+            <div class="w-full bg-stone-200 dark:bg-stone-800 rounded-full h-1.5 overflow-hidden">
+              <div id="progressBarPaspor" class="bg-gold-500 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div onclick="filterByAdminDoc('FOTO')" id="docItem_FOTO" class="verif-doc-item p-2 rounded-xl bg-brown-50/60 dark:bg-brown-950/50 border border-brown-100 dark:border-brown-800/60 cursor-pointer active:scale-98 transition">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-semibold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
+                <i data-lucide="camera" class="w-3.5 h-3.5 text-gold-600"></i> Foto Jamaah
+              </span>
+              <span class="text-[11px] font-bold text-stone-700 dark:text-stone-300" id="progressFotoText">0 / 0 (0%)</span>
+            </div>
+            <div class="w-full bg-stone-200 dark:bg-stone-800 rounded-full h-1.5 overflow-hidden">
+              <div id="progressBarFoto" class="bg-gold-500 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div onclick="filterByAdminDoc('VISABIO')" id="docItem_VISABIO" class="verif-doc-item p-2 rounded-xl bg-brown-50/60 dark:bg-brown-950/50 border border-brown-100 dark:border-brown-800/60 cursor-pointer active:scale-98 transition">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-semibold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
+                <i data-lucide="fingerprint" class="w-3.5 h-3.5 text-gold-600"></i> Bio Visa (Visabio)
+              </span>
+              <span class="text-[11px] font-bold text-stone-700 dark:text-stone-300" id="progressVisabioText">0 / 0 (0%)</span>
+            </div>
+            <div class="w-full bg-stone-200 dark:bg-stone-800 rounded-full h-1.5 overflow-hidden">
+              <div id="progressBarVisabio" class="bg-gold-500 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div onclick="filterByAdminDoc('ISTITAAH')" id="docItem_ISTITAAH" class="verif-doc-item p-2 rounded-xl bg-brown-50/60 dark:bg-brown-950/50 border border-brown-100 dark:border-brown-800/60 cursor-pointer active:scale-98 transition">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-semibold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
+                <i data-lucide="heart-pulse" class="w-3.5 h-3.5 text-gold-600"></i> Istithaah Kesehatan
+              </span>
+              <span class="text-[11px] font-bold text-stone-700 dark:text-stone-300" id="progressIstitaahText">0 / 0 (0%)</span>
+            </div>
+            <div class="w-full bg-stone-200 dark:bg-stone-800 rounded-full h-1.5 overflow-hidden">
+              <div id="progressBarIstitaah" class="bg-gold-500 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div onclick="filterByAdminDoc('PELUNASAN')" id="docItem_PELUNASAN" class="verif-doc-item p-2 rounded-xl bg-brown-50/60 dark:bg-brown-950/50 border border-brown-100 dark:border-brown-800/60 cursor-pointer active:scale-98 transition">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-semibold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
+                <i data-lucide="badge-check" class="w-3.5 h-3.5 text-gold-600"></i> Pelunasan BPIH
+              </span>
+              <span class="text-[11px] font-bold text-stone-700 dark:text-stone-300" id="progressPelunasanText">0 / 0 (0%)</span>
+            </div>
+            <div class="w-full bg-stone-200 dark:bg-stone-800 rounded-full h-1.5 overflow-hidden">
+              <div id="progressBarPelunasan" class="bg-gold-500 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PENCARIAN VERIFIKASI -->
+      <div class="relative">
+        <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3.5 top-3.5"></i>
+        <input 
+          type="text" 
+          id="searchVerifInput" 
+          placeholder="Cari Nama, No Porsi, No Paspor..." 
+          class="w-full pl-10 pr-10 py-2.5 bg-white dark:bg-brown-900/90 border border-brown-200 dark:border-brown-800 rounded-xl text-xs text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-gold-500 shadow-xs"
+        />
+        <button id="clearSearchVerifBtn" class="hidden absolute right-3 top-3 text-stone-400 hover:text-stone-600">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- DAFTAR JAMAAH VERIFIKASI -->
+      <div class="flex items-center justify-between text-[11px] text-stone-500 px-1">
+        <span>Menampilkan <strong id="verifResultCount" class="text-brown-900 dark:text-gold-300 font-semibold">0</strong> calon jamaah</span>
+        <span class="text-[10px]">Ketuk kartu untuk 11 dokumen</span>
+      </div>
+
+      <div id="verifListContainer" class="space-y-2"></div>
+
+      <footer class="pt-2 pb-4 text-center">
+        <p class="text-[11px] font-bold text-brown-800 dark:text-gold-400">&copy;CikibomTeam</p>
+      </footer>
+    </div>
+
+  </main>
+
+  <!-- ================= MODAL DETAIL JAMAAH ================= -->
+  <div id="modalBackdrop" class="fixed inset-0 bg-stone-950/70 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-200"></div>
+  <div id="detailBottomSheet" class="fixed bottom-0 inset-x-0 max-w-md mx-auto z-50 bg-white dark:bg-brown-900 rounded-t-3xl border-t border-gold-500/30 shadow-2xl p-5 transform translate-y-full bottom-sheet">
+    <div class="w-12 h-1 bg-stone-300 dark:bg-stone-700 rounded-full mx-auto mb-3"></div>
+    
+    <div class="mb-4 pb-3 border-b border-brown-100 dark:border-brown-800/80 flex items-start justify-between">
+      <div>
+        <span class="text-[10px] font-black uppercase tracking-widest text-gold-600 dark:text-gold-400 block">NOMOR PORSI SISKOHAT</span>
+        <div id="modalPorsiBesar" class="text-2xl font-black font-mono tracking-widest text-brown-950 dark:text-gold-300 mt-0.5">
+          -
+        </div>
+        <h3 id="modalNama" class="text-base font-bold text-stone-900 dark:text-white uppercase mt-1 leading-tight">-</h3>
+        <p id="modalAyah" class="text-xs text-stone-500 mt-0.5">Bin / Binti: -</p>
+      </div>
+      <button id="closeModalBtn" class="p-1 rounded-full text-stone-400 hover:text-stone-600">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <div class="space-y-2 text-xs">
+      <div class="flex justify-between py-1.5 border-b border-brown-50 dark:border-brown-800/60">
+        <span class="text-stone-400">Tempat, Tgl Lahir</span>
+        <span id="modalLahir" class="font-bold text-brown-900 dark:text-stone-200 text-right">-</span>
+      </div>
+      <div class="flex justify-between py-1.5 border-b border-brown-50 dark:border-brown-800/60">
+        <span class="text-stone-400">Jenis Kelamin</span>
+        <span id="modalJk" class="font-semibold text-stone-800 dark:text-stone-200">-</span>
+      </div>
+      <div class="flex justify-between py-1.5 border-b border-brown-50 dark:border-brown-800/60">
+        <span class="text-stone-400">Tanggal Daftar</span>
+        <span id="modalTglDaftar" class="font-semibold text-stone-800 dark:text-stone-200 font-mono">-</span>
+      </div>
+      <div class="flex justify-between py-1.5 border-b border-brown-50 dark:border-brown-800/60">
+        <span class="text-stone-400">Pekerjaan</span>
+        <span id="modalPekerjaan" class="font-semibold text-stone-800 dark:text-stone-200">-</span>
+      </div>
+      <div class="flex justify-between py-1.5 border-b border-brown-50 dark:border-brown-800/60">
+        <span class="text-stone-400">Bank Penerima (BPS)</span>
+        <span id="modalBank" class="font-semibold text-stone-800 dark:text-stone-200 text-right">-</span>
+      </div>
+      <div class="flex justify-between py-1.5 border-b border-brown-50 dark:border-brown-800/60">
+        <span class="text-stone-400">Kelurahan / Kecamatan</span>
+        <span id="modalAlamat" class="font-semibold text-stone-800 dark:text-stone-200 text-right">-</span>
+      </div>
+      <div class="flex justify-between py-1.5">
+        <span class="text-stone-400">Status Keberangkatan</span>
+        <span id="modalStatusHaji" class="font-semibold px-2 py-0.5 rounded text-[10px] bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300">BELUM</span>
+      </div>
+    </div>
+
+    <button id="modalOkBtn" class="mt-5 w-full py-2.5 bg-gradient-to-r from-gold-600 via-gold-500 to-amber-600 hover:from-gold-700 hover:to-amber-700 text-brown-950 font-black rounded-xl text-xs shadow-md shadow-gold-500/20 active:scale-98 transition">
+      Tutup
+    </button>
+  </div>
+
+  <!-- ================= MODAL DETAIL 11 DOKUMEN VERIFIKASI ================= -->
+  <div id="verifModalBackdrop" class="fixed inset-0 bg-stone-950/70 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-200"></div>
+  <div id="verifBottomSheet" class="fixed bottom-0 inset-x-0 max-w-md mx-auto z-50 bg-white dark:bg-brown-900 rounded-t-3xl border-t border-gold-500/30 shadow-2xl p-5 transform translate-y-full bottom-sheet max-h-[88vh] overflow-y-auto">
+    <div class="w-12 h-1 bg-stone-300 dark:bg-stone-700 rounded-full mx-auto mb-3"></div>
+    
+    <div class="flex items-start justify-between mb-3 pb-2 border-b border-brown-100 dark:border-brown-800">
+      <div>
+        <div class="flex items-center gap-1.5 mb-1">
+          <span id="vModalPorsiBesar" class="text-base font-black font-mono text-gold-600 dark:text-gold-400">
+            #3900000000
+          </span>
+          <span id="vModalKategoriBadge" class="px-2 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-900 dark:bg-gold-950 dark:text-gold-300">
+            REGULER
+          </span>
+          <span id="vModalStatusBadge" class="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300">
+            SIAP
+          </span>
+        </div>
+        <h3 id="vModalNama" class="text-base font-bold text-stone-900 dark:text-white uppercase leading-tight">-</h3>
+        <p id="vModalAyah" class="text-xs text-stone-500 mt-0.5">Bin / Binti: -</p>
+      </div>
+      <button id="closeVerifModalBtn" class="p-1 rounded-full text-stone-400 hover:text-stone-600">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <div class="p-2.5 rounded-xl bg-brown-50/70 dark:bg-brown-950/60 border border-brown-100 dark:border-brown-800 text-[11px] mb-3 grid grid-cols-2 gap-1.5 text-stone-600 dark:text-stone-300">
+      <div>Lahir: <strong id="vModalLahir" class="text-stone-900 dark:text-white font-medium">-</strong></div>
+      <div>Wilayah: <strong id="vModalWilayah" class="text-stone-900 dark:text-white font-medium">-</strong></div>
+      <div class="col-span-2">Bank Penerima: <strong id="vModalBank" class="text-stone-900 dark:text-white font-medium">-</strong></div>
+    </div>
+
+    <h4 class="text-[11px] font-bold text-gold-600 dark:text-gold-400 uppercase tracking-wider mb-2">Checklist 11 Administrasi</h4>
+    <div class="space-y-1.5 text-xs" id="vModalAdminList"></div>
+
+    <button id="verifModalOkBtn" class="mt-5 w-full py-2.5 bg-gradient-to-r from-gold-600 via-gold-500 to-amber-600 hover:from-gold-700 hover:to-amber-700 text-brown-950 font-black rounded-xl text-xs shadow-md shadow-gold-500/20 active:scale-98 transition">
+      Selesai
+    </button>
+  </div>
+
+  <!-- ================= FIXED BOTTOM NAV ================= -->
+  <nav class="fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-brown-950/95 backdrop-blur-md border-t border-brown-200/80 dark:border-brown-900 py-2">
+    <div class="max-w-md mx-auto grid grid-cols-3 text-center">
+      <button class="nav-btn active flex flex-col items-center justify-center py-1 text-gold-600 dark:text-gold-400 transition" data-target="view-dashboard">
+        <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-bold">Dashboard</span>
+      </button>
+      <button class="nav-btn flex flex-col items-center justify-center py-1 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition" data-target="view-jamaah">
+        <i data-lucide="users" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-bold">Jamaah</span>
+      </button>
+      <button class="nav-btn flex flex-col items-center justify-center py-1 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition" data-target="view-verif">
+        <i data-lucide="check-check" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-bold">Verifikasi</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ================= LOGIKA JAVASCRIPT ================= -->
+  <script>
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    let jamaahData = [];
+    let verifData = [];
+
+    let currentVerifFilter = {
+      kategori: 'SEMUA',
+      status: 'SEMUA',
+      docName: null,
+      searchQuery: ''
+    };
+
+    let currentPage = 1;
+    const pageSize = 15;
+    let filteredList = [];
+
+    let chartYearInstance = null;
+    let chartBankInstance = null;
+    let chartJobInstance = null;
+
+    function initLoad() {
+      if (window.DATABASE_JAMAAH && Array.isArray(window.DATABASE_JAMAAH)) {
+        jamaahData = window.DATABASE_JAMAAH;
+      }
+      if (window.DATABASE_VERIF && Array.isArray(window.DATABASE_VERIF)) {
+        verifData = window.DATABASE_VERIF;
+      }
+
+      const badgeEl = document.getElementById('verifBadgeCount');
+      if (badgeEl) badgeEl.innerText = `${verifData.length} Nominasi`;
+
+      initDashboardKPI();
+      
+      populateYearFilter();
+      renderWilayahBreakdown();
+      applyFilters();
+      initVerifTab();
+
+      tryRenderChartsWithRetry(0);
+    }
+
+    function tryRenderChartsWithRetry(attempt) {
+      if (typeof Chart !== 'undefined') {
+        renderCharts();
+      } else if (attempt < 10) {
+        setTimeout(() => tryRenderChartsWithRetry(attempt + 1), 300);
+      }
+    }
+
+    function initDashboardKPI() {
+      const total = jamaahData.length;
+      document.getElementById('kpiTotalJamaah').innerText = total.toLocaleString('id-ID');
+
+      const pCount = jamaahData.filter(d => (d.jk || '').toUpperCase() === 'P').length;
+      const lCount = total - pCount;
+      const pPct = total > 0 ? Math.round((pCount / total) * 100) : 0;
+      const lPct = total > 0 ? (100 - pPct) : 0;
+      document.getElementById('kpiGender').innerText = `${pCount.toLocaleString('id-ID')} / ${lCount.toLocaleString('id-ID')}`;
+      document.getElementById('kpiGenderRatio').innerText = `${pPct}% P • ${lPct}% L`;
+
+      const totalVerif = verifData.length;
+      document.getElementById('kpiKuota').innerText = totalVerif;
+
+      const siapCount = verifData.filter(d => (d.status_berangkat || '').toUpperCase() === 'SIAP').length;
+      const siapPct = totalVerif > 0 ? ((siapCount / totalVerif) * 100).toFixed(1) : 0;
+      document.getElementById('kpiKesiapan').innerText = `${siapCount} SIAP`;
+      document.getElementById('kpiKesiapanPct').innerText = `${siapPct}% Terkonfirmasi Siap`;
+    }
+
+    function renderCharts() {
+      if (typeof Chart === 'undefined') return;
+
+      const isDark = document.documentElement.classList.contains('dark');
+      const textColor = isDark ? '#d6c7b2' : '#785f47';
+      const gridColor = isDark ? '#2e1c11' : '#f2e8dc';
+
+      // 1. TREN TAHUNAN
+      try {
+        const yearsMap = {};
+        jamaahData.forEach(d => {
+          const parts = (d.tgl || '').split('/');
+          const y = parts.length === 3 ? parts[2] : (d.tgl || '').slice(-4);
+          if (y && !isNaN(y)) yearsMap[y] = (yearsMap[y] || 0) + 1;
+        });
+        const sortedYears = Object.keys(yearsMap).sort();
+        const yearValues = sortedYears.map(y => yearsMap[y]);
+
+        if (chartYearInstance) chartYearInstance.destroy();
+        const canvasYear = document.getElementById('chartYear');
+        if (canvasYear) {
+          chartYearInstance = new Chart(canvasYear.getContext('2d'), {
+            type: 'line',
+            data: {
+              labels: sortedYears,
+              datasets: [{
+                data: yearValues,
+                borderColor: '#d4af37',
+                backgroundColor: 'rgba(212, 175, 55, 0.12)',
+                fill: true,
+                tension: 0.35,
+                pointRadius: 2.5,
+                pointBackgroundColor: '#b89327'
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { ticks: { color: textColor, font: { size: 9 } }, grid: { display: false } },
+                y: { ticks: { color: textColor, font: { size: 9 } }, grid: { color: gridColor } }
+              }
+            }
+          });
+        }
+      } catch (e) { console.error('Error Chart Year:', e); }
+
+      // 2. DONUT BANK
+      try {
+        const bankMap = {};
+        jamaahData.forEach(d => {
+          let b = (d.bank || 'Lainnya').replace('BANK ', '').trim();
+          if (b.includes('MUAMALAT')) b = 'Muamalat';
+          else if (b.includes('SYARIAH IND')) b = 'BSI';
+          else if (b.includes('PANIN')) b = 'Panin Dubai';
+          else if (b.includes('NANO')) b = 'Nano Syariah';
+          bankMap[b] = (bankMap[b] || 0) + 1;
+        });
+
+        if (chartBankInstance) chartBankInstance.destroy();
+        const canvasBank = document.getElementById('chartBank');
+        if (canvasBank) {
+          chartBankInstance = new Chart(canvasBank.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+              labels: Object.keys(bankMap),
+              datasets: [{
+                data: Object.values(bankMap),
+                backgroundColor: ['#d4af37', '#7a4f31', '#b89327', '#c8963e', '#3e2413'],
+                borderWidth: 0
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 10, color: textColor, font: { size: 10 } } }
+              },
+              cutout: '68%'
+            }
+          });
+        }
+      } catch (e) { console.error('Error Chart Bank:', e); }
+
+      // 3. BAR PROFESI
+      try {
+        const jobMap = {};
+        jamaahData.forEach(d => {
+          const j = d.pekerjaan || 'Lainnya';
+          jobMap[j] = (jobMap[j] || 0) + 1;
+        });
+        const sortedJobs = Object.entries(jobMap).sort((a,b) => b[1] - a[1]).slice(0, 5);
+
+        if (chartJobInstance) chartJobInstance.destroy();
+        const canvasJob = document.getElementById('chartJob');
+        if (canvasJob) {
+          chartJobInstance = new Chart(canvasJob.getContext('2d'), {
+            type: 'bar',
+            data: {
+              labels: sortedJobs.map(j => j[0].length > 12 ? j[0].slice(0, 10)+'..' : j[0]),
+              datasets: [{
+                data: sortedJobs.map(j => j[1]),
+                backgroundColor: '#d4af37',
+                borderRadius: 6
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { ticks: { color: textColor, font: { size: 9 } }, grid: { display: false } },
+                y: { ticks: { color: textColor, font: { size: 9 } }, grid: { color: gridColor } }
+              }
+            }
+          });
+        }
+      } catch (e) { console.error('Error Chart Job:', e); }
+    }
+
+    function renderWilayahBreakdown() {
+      const container = document.getElementById('kecamatanList');
+      if (!container) return;
+      const kecMap = {};
+      jamaahData.forEach(d => {
+        let k = (d.kec && d.kec !== '-' && d.kec !== 'null') ? d.kec.toUpperCase() : 'SORONG';
+        kecMap[k] = (kecMap[k] || 0) + 1;
+      });
+
+      const total = jamaahData.length || 1;
+      const sorted = Object.entries(kecMap).sort((a, b) => b[1] - a[1]);
+
+      container.innerHTML = sorted.map(([kec, count]) => {
+        const pct = Math.round((count / total) * 100);
+        return `
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-medium text-stone-800 dark:text-stone-200">${kec}</span>
+              <span class="font-bold text-gold-700 dark:text-gold-400">${count.toLocaleString('id-ID')} <span class="text-[10px] text-stone-400">(${pct}%)</span></span>
+            </div>
+            <div class="w-full bg-brown-100 dark:bg-brown-950 rounded-full h-2 overflow-hidden">
+              <div class="bg-gold-500 h-2 rounded-full" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function populateYearFilter() {
+      const years = new Set();
+      jamaahData.forEach(d => {
+        if (d.tgl && d.tgl.length >= 4) {
+          const parts = d.tgl.split('/');
+          const y = parts.length === 3 ? parts[2] : d.tgl.slice(-4);
+          if (y && !isNaN(y)) years.add(y);
+        }
+      });
+      const yearSelect = document.getElementById('filterYear');
+      if (!yearSelect) return;
+      yearSelect.innerHTML = '<option value="">Semua Tahun</option>';
+      Array.from(years).sort().reverse().forEach(y => {
+        yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
+      });
+    }
+
+    function applyFilters() {
+      const q = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
+      const bankFilter = document.getElementById('filterBank')?.value || '';
+      const genderFilter = document.getElementById('filterGender')?.value || '';
+      const yearFilter = document.getElementById('filterYear')?.value || '';
+      const monthFilter = document.getElementById('filterMonth')?.value || '';
+
+      filteredList = jamaahData.filter(item => {
+        const matchQ = !q || 
+          (item.nama && item.nama.toLowerCase().includes(q)) ||
+          (item.porsi && item.porsi.toLowerCase().includes(q)) ||
+          (item.desa && item.desa.toLowerCase().includes(q));
+
+        const matchBank = !bankFilter || (item.bank && item.bank.toUpperCase().includes(bankFilter));
+        const matchGender = !genderFilter || ((item.jk || '').toUpperCase() === genderFilter);
+
+        let matchYear = true;
+        let matchMonth = true;
+        if (item.tgl) {
+          const parts = item.tgl.split('/');
+          if (parts.length === 3) {
+            const m = parts[1].padStart(2, '0');
+            const y = parts[2];
+            if (monthFilter) matchMonth = (m === monthFilter);
+            if (yearFilter) matchYear = (y === yearFilter);
+          }
+        }
+
+        return matchQ && matchBank && matchGender && matchYear && matchMonth;
+      });
+
+      const countEl = document.getElementById('resultCount');
+      if (countEl) countEl.innerText = filteredList.length.toLocaleString('id-ID');
+      currentPage = 1;
+      renderJamaahList();
+    }
+
+    function renderJamaahList() {
+      const container = document.getElementById('jamaahListContainer');
+      if (!container) return;
+
+      const start = (currentPage - 1) * pageSize;
+      const pageData = filteredList.slice(start, start + pageSize);
+      const totalPages = Math.ceil(filteredList.length / pageSize) || 1;
+
+      document.getElementById('pageIndicator').innerText = `Hal ${currentPage} dari ${totalPages}`;
+      document.getElementById('prevPageBtn').disabled = currentPage <= 1;
+      document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+
+      if (pageData.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-10 text-stone-400">
+            <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-1.5 opacity-40"></i>
+            <p class="text-xs">Data jamaah tidak ditemukan.</p>
+          </div>
+        `;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = pageData.map((item, index) => {
+        const isP = (item.jk || '').toUpperCase() === 'P';
+        const genderBadgeClass = isP 
+          ? 'bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300' 
+          : 'bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300';
+        
+        let bankBadge = (item.bank || '').includes('MUAMALAT') ? 'Muamalat' : ((item.bank || '').includes('SYARIAH IND') ? 'BSI' : 'Syariah');
+
+        let verifTag = '';
+        if (item.verif) {
+          verifTag = `
+            <span class="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 dark:bg-gold-950 dark:text-gold-300 mt-1">
+              ✈️ 2026: ${item.verif.status} (${item.verif.kategori})
+            </span>
+          `;
+        }
+
+        return `
+          <div onclick="openDetailModal(${start + index})" class="p-3 bg-white dark:bg-brown-900/90 border border-brown-200/90 dark:border-brown-800 rounded-2xl active:scale-[0.98] transition cursor-pointer shadow-xs">
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="flex items-center gap-1.5 mb-1">
+                  <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-brown-100 dark:bg-brown-800 text-brown-900 dark:text-gold-300 font-mono">
+                    #${item.porsi}
+                  </span>
+                  <span class="text-[9px] font-semibold px-1.5 py-0.5 rounded ${genderBadgeClass}">
+                    ${isP ? 'Wanita' : 'Pria'}
+                  </span>
+                </div>
+                <h4 class="text-xs font-bold text-stone-900 dark:text-white uppercase leading-tight">${item.nama}</h4>
+                <p class="text-[11px] text-stone-500 dark:text-stone-400 mt-0.5 flex items-center gap-1">
+                  <i data-lucide="map-pin" class="w-3 h-3 text-stone-400"></i> ${item.desa || '-'}
+                </p>
+                ${verifTag}
+              </div>
+              <div class="text-right">
+                <span class="text-[10px] font-semibold text-gold-600 dark:text-gold-400 block">${bankBadge}</span>
+                <span class="text-[10px] text-stone-400 font-mono">${item.tgl || '-'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    window.openDetailModal = function(idx) {
+      const item = filteredList[idx];
+      if (!item) return;
+
+      document.getElementById('modalPorsiBesar').innerText = item.porsi;
+      document.getElementById('modalNama').innerText = item.nama;
+      document.getElementById('modalAyah').innerText = `Bin / Binti: ${item.ayah || '-'}`;
+      document.getElementById('modalLahir').innerText = `${item.tempat_lahir || '-'}, ${item.tgl_lahir || '-'}`;
+      document.getElementById('modalJk').innerText = (item.jk || '').toUpperCase() === 'P' ? 'Perempuan' : 'Laki-Laki';
+      document.getElementById('modalTglDaftar').innerText = item.tgl || '-';
+      document.getElementById('modalPekerjaan').innerText = `${item.pekerjaan || '-'} (${item.pendidikan || '-'})`;
+      document.getElementById('modalBank').innerText = item.bank || '-';
+      document.getElementById('modalAlamat').innerText = `${item.desa || '-'}, ${item.kec || 'KOTA SORONG'}`;
+      document.getElementById('modalStatusHaji').innerText = item.s_haji || 'BELUM';
+
+      const backdrop = document.getElementById('modalBackdrop');
+      const sheet = document.getElementById('detailBottomSheet');
+      backdrop.classList.remove('hidden');
+      setTimeout(() => {
+        backdrop.classList.remove('opacity-0');
+        sheet.classList.remove('translate-y-full');
+      }, 10);
+    };
+
+    function closeModal() {
+      const backdrop = document.getElementById('modalBackdrop');
+      const sheet = document.getElementById('detailBottomSheet');
+      backdrop.classList.add('opacity-0');
+      sheet.classList.add('translate-y-full');
+      setTimeout(() => { backdrop.classList.add('hidden'); }, 250);
+    }
+
+    document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+    document.getElementById('modalOkBtn').addEventListener('click', closeModal);
+    document.getElementById('modalBackdrop').addEventListener('click', closeModal);
+
+    /* ================= TAB 3: VERIFIKASI (BARIS 2 KLIK -> BARIS 3 MENYESUAIKAN) ================= */
+    function initVerifTab() {
+      renderCategoryButtonsStyle();
+      updateVerifRow2And3();
+      applyVerifFilters();
+    }
+
+    function renderCategoryButtonsStyle() {
+      const activeCat = currentVerifFilter.kategori;
+      document.querySelectorAll('.verif-cat-btn').forEach(btn => {
+        const isSelected = btn.dataset.cat === activeCat;
+        if (isSelected) {
+          btn.className = "verif-cat-btn py-2 px-1.5 rounded-xl border border-gold-500 bg-gold-500 text-brown-950 font-black shadow-md shadow-gold-500/30 text-center cursor-pointer active:scale-95 transition-all";
+        } else {
+          btn.className = "verif-cat-btn py-2 px-1.5 rounded-xl border border-brown-200 dark:border-brown-800 bg-white/70 dark:bg-brown-900/40 text-stone-700 dark:text-stone-300 text-center cursor-pointer active:scale-95 transition-all";
+        }
+      });
+
+      document.getElementById('labelActiveKategori').innerText = `Pilihan: ${activeCat === 'SEMUA' ? 'Semua Kategori' : activeCat}`;
+      const totalVerif = verifData.length;
+      document.getElementById('cntCatAll').innerText = totalVerif;
+
+      const catCount = { REGULER: 0, LANSIA: 0, MAHRAM: 0, CADANGAN: 0, MUTASI: 0 };
+      verifData.forEach(item => {
+        const c = (item.kategori || '').toUpperCase();
+        if (catCount[c] !== undefined) catCount[c]++;
+      });
+
+      document.getElementById('cntCatReguler').innerText = catCount.REGULER;
+      document.getElementById('cntCatLansia').innerText = catCount.LANSIA;
+      document.getElementById('cntCatMahram').innerText = catCount.MAHRAM;
+      document.getElementById('cntCatCadangan').innerText = catCount.CADANGAN;
+      document.getElementById('cntCatMutasi').innerText = catCount.MUTASI;
+    }
+
+    // PENTING: Saat Baris 2 (Status) diklik, subset disaring berdasarkan Kategori DAN Status yang dipilih!
+    function updateVerifRow2And3() {
+      const activeCat = currentVerifFilter.kategori;
+      const activeSt = currentVerifFilter.status;
+
+      // Subset untuk Baris 2 (hanya difilter oleh Kategori Baris 1)
+      const subsetForStatus = verifData.filter(item => {
+        return activeCat === 'SEMUA' || (item.kategori || '').toUpperCase() === activeCat;
+      });
+
+      const subTotal = subsetForStatus.length;
+      const catLabel = activeCat === 'SEMUA' ? 'Semua' : activeCat;
+      document.getElementById('labelKategoriInfoSt').innerText = `Kategori: ${catLabel} (${subTotal})`;
+
+      const stCounts = { SIAP: 0, TUNDA: 0, 'BELUM BISA DI HUBUNGI': 0, 'PORSI BATU': 0, BERMASALAH: 0 };
+      subsetForStatus.forEach(item => {
+        const st = (item.status_berangkat || '').toUpperCase();
+        if (stCounts[st] !== undefined) stCounts[st]++;
+      });
+
+      document.getElementById('stAll').innerText = subTotal;
+      document.getElementById('stSiap').innerText = stCounts.SIAP;
+      document.getElementById('stTunda').innerText = stCounts.TUNDA;
+      document.getElementById('stBlm').innerText = stCounts['BELUM BISA DI HUBUNGI'];
+      document.getElementById('stBatu').innerText = stCounts['PORSI BATU'];
+      document.getElementById('stMasalah').innerText = stCounts.BERMASALAH;
+
+      // Subset untuk Baris 3 (difilter oleh Kategori Baris 1 DAN Status Baris 2 yang sedang dipilih!)
+      const subsetForDoc = subsetForStatus.filter(item => {
+        if (activeSt === 'SEMUA') return true;
+        return (item.status_berangkat || '').toUpperCase() === activeSt;
+      });
+
+      const docTotal = subsetForDoc.length;
+      const stLabel = activeSt === 'SEMUA' ? 'Semua Status' : activeSt;
+      document.getElementById('labelKategoriInfoDoc').innerText = `Terhadap: ${catLabel} [${stLabel}] (${docTotal})`;
+
+      const docCounts = { PASPOR: 0, FOTO: 0, VISABIO: 0, ISTITAAH: 0, PELUNASAN: 0 };
+      subsetForDoc.forEach(item => {
+        if (item.admin) {
+          ['PASPOR', 'FOTO', 'VISABIO', 'ISTITAAH', 'PELUNASAN'].forEach(doc => {
+            const val = (item.admin[doc] || '').trim();
+            if (val !== '' && val !== '-' && val !== 'nan') {
+              docCounts[doc]++;
+            }
+          });
+        }
+      });
+
+      const updateBar = (id, count, total) => {
+        const pct = total > 0 ? ((count / total) * 100).toFixed(1) : '0.0';
+        document.getElementById(`progress${id}Text`).innerText = `${count} / ${total} (${pct}%)`;
+        document.getElementById(`progressBar${id}`).style.width = `${pct}%`;
+      };
+
+      updateBar('Paspor', docCounts.PASPOR, docTotal);
+      updateBar('Foto', docCounts.FOTO, docTotal);
+      updateBar('Visabio', docCounts.VISABIO, docTotal);
+      updateBar('Istitaah', docCounts.ISTITAAH, docTotal);
+      updateBar('Pelunasan', docCounts.PELUNASAN, docTotal);
+    }
+
+    window.setVerifKategori = function(cat) {
+      currentVerifFilter.kategori = cat;
+      renderCategoryButtonsStyle();
+      updateVerifRow2And3();
+      applyVerifFilters();
+    };
+
+    window.setVerifStatus = function(st) {
+      currentVerifFilter.status = st;
+      document.querySelectorAll('.verif-st-btn').forEach(btn => {
+        const isActive = btn.dataset.status === st;
+        btn.classList.toggle('ring-2', isActive);
+        btn.classList.toggle('ring-offset-1', isActive);
+        btn.classList.toggle('ring-gold-500', isActive);
+      });
+      // SAAT BARIS 2 DIKLIK, BARIS 3 OTOMATIS MENYESUAIKAN!
+      updateVerifRow2And3();
+      applyVerifFilters();
+    };
+
+    window.filterByAdminDoc = function(doc) {
+      if (currentVerifFilter.docName === doc) {
+        currentVerifFilter.docName = null;
+      } else {
+        currentVerifFilter.docName = doc;
+      }
+
+      ['PASPOR', 'FOTO', 'VISABIO', 'ISTITAAH', 'PELUNASAN'].forEach(d => {
+        const el = document.getElementById(`docItem_${d}`);
+        if (el) {
+          const isActive = currentVerifFilter.docName === d;
+          el.classList.toggle('ring-2', isActive);
+          el.classList.toggle('ring-gold-500', isActive);
+          el.classList.toggle('bg-gold-50', isActive);
+          el.classList.toggle('dark:bg-gold-950/40', isActive);
+        }
+      });
+
+      applyVerifFilters();
+    };
+
+    window.resetVerifFilters = function() {
+      currentVerifFilter.kategori = 'SEMUA';
+      currentVerifFilter.status = 'SEMUA';
+      currentVerifFilter.docName = null;
+      currentVerifFilter.searchQuery = '';
+      document.getElementById('searchVerifInput').value = '';
+      document.getElementById('clearSearchVerifBtn').classList.add('hidden');
+
+      ['PASPOR', 'FOTO', 'VISABIO', 'ISTITAAH', 'PELUNASAN'].forEach(d => {
+        const el = document.getElementById(`docItem_${d}`);
+        if (el) el.classList.remove('ring-2', 'ring-gold-500', 'bg-gold-50', 'dark:bg-gold-950/40');
+      });
+
+      setVerifStatus('SEMUA');
+      setVerifKategori('SEMUA');
+    };
+
+    document.getElementById('resetVerifFilterBtn').addEventListener('click', resetVerifFilters);
+
+    function applyVerifFilters() {
+      const q = currentVerifFilter.searchQuery.toLowerCase();
+      const cat = currentVerifFilter.kategori;
+      const st = currentVerifFilter.status;
+      const doc = currentVerifFilter.docName;
+
+      const filtered = verifData.filter(item => {
+        const matchQ = !q ||
+          (item.nama && item.nama.toLowerCase().includes(q)) ||
+          (item.porsi && item.porsi.toLowerCase().includes(q)) ||
+          (item.admin && item.admin.PASPOR && item.admin.PASPOR.toLowerCase().includes(q));
+
+        const matchCat = cat === 'SEMUA' || (item.kategori || '').toUpperCase() === cat;
+        const matchSt = st === 'SEMUA' || (item.status_berangkat || '').toUpperCase() === st;
+
+        let matchDoc = true;
+        if (doc) {
+          const val = item.admin ? (item.admin[doc] || '').trim() : '';
+          matchDoc = val !== '' && val !== '-' && val !== 'nan';
+        }
+
+        return matchQ && matchCat && matchSt && matchDoc;
+      });
+
+      const filterBar = document.getElementById('verifActiveFilterBar');
+      const parts = [];
+      if (cat !== 'SEMUA') parts.push(`Kategori: ${cat}`);
+      if (st !== 'SEMUA') parts.push(`Status: ${st}`);
+      if (doc) parts.push(`Dokumen: [${doc}]`);
+      if (q) parts.push(`Pencarian: "${q}"`);
+
+      if (parts.length > 0) {
+        filterBar.classList.remove('hidden');
+        document.getElementById('verifFilterText').innerText = `Filter: ${parts.join(' • ')}`;
+      } else {
+        filterBar.classList.add('hidden');
+      }
+
+      document.getElementById('verifResultCount').innerText = filtered.length.toLocaleString('id-ID');
+      renderVerifList(filtered);
+    }
+
+    function renderVerifList(list) {
+      const container = document.getElementById('verifListContainer');
+      if (!container) return;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-10 text-stone-400">
+            <i data-lucide="filter-x" class="w-8 h-8 mx-auto mb-1.5 opacity-40"></i>
+            <p class="text-xs">Tidak ada calon jamaah yang sesuai kriteria.</p>
+          </div>
+        `;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = list.map((item) => {
+        const st = (item.status_berangkat || 'BELUM').toUpperCase();
+        let stClass = 'bg-stone-100 text-stone-700 dark:bg-brown-800 dark:text-stone-300';
+        if (st === 'SIAP') stClass = 'bg-emerald-50 text-emerald-700 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800';
+        else if (st === 'TUNDA') stClass = 'bg-rose-50 text-rose-700 border border-rose-300 dark:bg-rose-950 dark:text-rose-300 dark:border-rose-800';
+        else if (st.includes('BELUM')) stClass = 'bg-amber-50 text-amber-700 border border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800';
+
+        const pasporVal = item.admin ? (item.admin.PASPOR || '').trim() : '';
+        const hasPaspor = pasporVal !== '' && pasporVal !== '-';
+        const hasFoto = item.admin && item.admin.FOTO && item.admin.FOTO.trim() !== '';
+
+        return `
+          <div onclick="openVerifDetailModal('${item.porsi}')" class="p-3 bg-white dark:bg-brown-900/90 border border-brown-200/90 dark:border-brown-800 rounded-2xl active:scale-[0.98] transition cursor-pointer shadow-xs">
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="flex items-center gap-1.5 mb-1">
+                  <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-brown-100 dark:bg-brown-800 text-brown-900 dark:text-gold-300 font-mono">
+                    #${item.porsi}
+                  </span>
+                  <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 dark:bg-gold-950 dark:text-gold-300">
+                    ${item.kategori || 'REGULER'}
+                  </span>
+                  <span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${stClass}">
+                    ${st}
+                  </span>
+                </div>
+                <h4 class="text-xs font-bold text-stone-900 dark:text-white uppercase leading-tight">${item.nama}</h4>
+                <p class="text-[11px] text-stone-500 dark:text-stone-400 mt-0.5">Bin/Binti: ${item.ayah || '-'}</p>
+              </div>
+
+              <div class="text-right">
+                <span class="text-[10px] font-mono px-1.5 py-0.5 rounded ${hasPaspor ? 'bg-gold-100 text-gold-900 dark:bg-gold-950 dark:text-gold-300 font-bold' : 'bg-stone-100 text-stone-400 dark:bg-stone-800'}">
+                  ${hasPaspor ? pasporVal : 'No Paspor'}
+                </span>
+                <span class="text-[9px] text-stone-400 block mt-1 font-mono">${item.rekap ? item.rekap.kec : 'SORONG'}</span>
+              </div>
+            </div>
+
+            <div class="mt-2.5 pt-2 border-t border-brown-100 dark:border-brown-800/80 flex items-center justify-between text-[10px]">
+              <span class="flex items-center gap-1 ${hasPaspor ? 'text-gold-600 dark:text-gold-400 font-bold' : 'text-stone-400'}">
+                <i data-lucide="${hasPaspor ? 'check-circle-2' : 'circle'}" class="w-3 h-3"></i> Paspor
+              </span>
+              <span class="flex items-center gap-1 ${hasFoto ? 'text-gold-600 dark:text-gold-400 font-bold' : 'text-stone-400'}">
+                <i data-lucide="${hasFoto ? 'check-circle-2' : 'circle'}" class="w-3 h-3"></i> Foto
+              </span>
+              <span class="flex items-center gap-1 text-stone-400">
+                <i data-lucide="circle" class="w-3 h-3"></i> Visabio
+              </span>
+              <span class="flex items-center gap-1 text-stone-400">
+                <i data-lucide="circle" class="w-3 h-3"></i> Istithaah
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    window.openVerifDetailModal = function(porsi) {
+      const item = verifData.find(x => x.porsi === porsi);
+      if (!item) return;
+
+      document.getElementById('vModalPorsiBesar').innerText = `#${item.porsi}`;
+      document.getElementById('vModalKategoriBadge').innerText = item.kategori || 'REGULER';
+      document.getElementById('vModalStatusBadge').innerText = item.status_berangkat || 'BELUM';
+      document.getElementById('vModalNama').innerText = item.nama;
+      document.getElementById('vModalAyah').innerText = `Bin / Binti: ${item.ayah || '-'}`;
+      document.getElementById('vModalLahir').innerText = item.rekap ? `${item.rekap.tempat_lahir || '-'}, ${item.rekap.tgl_lahir || '-'}` : '-';
+      document.getElementById('vModalWilayah').innerText = item.rekap ? `${item.rekap.desa}, ${item.rekap.kec}` : 'KOTA SORONG';
+      document.getElementById('vModalBank').innerText = item.rekap ? item.rekap.bank : '-';
+
+      const adminCols = [
+        { key: 'PASPOR', label: '1. Paspor' },
+        { key: 'KIRIM PASPOR', label: '2. Kirim Paspor' },
+        { key: 'VISABIO', label: '3. Bio Visa (Visabio)' },
+        { key: 'UPLOAD VISABIO', label: '4. Upload Bio Visa' },
+        { key: 'FOTO', label: '5. Foto Jamaah' },
+        { key: 'UPLOAD FOTO', label: '6. Upload Foto' },
+        { key: 'KESEHATAN', label: '7. Pemeriksaan Kesehatan' },
+        { key: 'ISTITAAH', label: '8. Penetapan Istithaah' },
+        { key: 'PELUNASAN', label: '9. Pelunasan BPIH' },
+        { key: 'JENIS JAMAAH', label: '10. Jenis Jamaah' },
+        { key: 'KETERANGAN', label: '11. Keterangan Lapangan' }
+      ];
+
+      const listContainer = document.getElementById('vModalAdminList');
+      listContainer.innerHTML = adminCols.map(col => {
+        const rawVal = item.admin ? (item.admin[col.key] || '').trim() : '';
+        const isFilled = rawVal !== '' && rawVal !== '-' && rawVal !== 'nan';
+
+        let badgeHtml = isFilled 
+          ? `<span class="px-2 py-0.5 rounded font-bold text-[10px] bg-gold-100 text-gold-900 dark:bg-gold-950 dark:text-gold-300 font-mono">${rawVal}</span>`
+          : `<span class="px-2 py-0.5 rounded text-[10px] bg-stone-100 text-stone-400 dark:bg-stone-800 dark:text-stone-500">Belum</span>`;
+
+        return `
+          <div class="flex items-center justify-between py-1.5 border-b border-brown-100 dark:border-brown-800/80">
+            <span class="text-stone-600 dark:text-stone-400 font-medium">${col.label}</span>
+            <div>${badgeHtml}</div>
+          </div>
+        `;
+      }).join('');
+
+      const backdrop = document.getElementById('verifModalBackdrop');
+      const sheet = document.getElementById('verifBottomSheet');
+      backdrop.classList.remove('hidden');
+      setTimeout(() => {
+        backdrop.classList.remove('opacity-0');
+        sheet.classList.remove('translate-y-full');
+      }, 10);
+    };
+
+    function closeVerifModal() {
+      const backdrop = document.getElementById('verifModalBackdrop');
+      const sheet = document.getElementById('verifBottomSheet');
+      backdrop.classList.add('opacity-0');
+      sheet.classList.add('translate-y-full');
+      setTimeout(() => { backdrop.classList.add('hidden'); }, 250);
+    }
+
+    document.getElementById('closeVerifModalBtn').addEventListener('click', closeVerifModal);
+    document.getElementById('verifModalOkBtn').addEventListener('click', closeVerifModal);
+    document.getElementById('verifModalBackdrop').addEventListener('click', closeVerifModal);
+
+    let searchVerifTimeout = null;
+    document.getElementById('searchVerifInput').addEventListener('input', (e) => {
+      clearTimeout(searchVerifTimeout);
+      const val = e.target.value;
+      document.getElementById('clearSearchVerifBtn').classList.toggle('hidden', !val);
+      searchVerifTimeout = setTimeout(() => {
+        currentVerifFilter.searchQuery = val;
+        applyVerifFilters();
+      }, 200);
+    });
+
+    document.getElementById('clearSearchVerifBtn').addEventListener('click', () => {
+      document.getElementById('searchVerifInput').value = '';
+      document.getElementById('clearSearchVerifBtn').classList.add('hidden');
+      currentVerifFilter.searchQuery = '';
+      applyVerifFilters();
+    });
+
+    // Navigasi 3 Tab Bottom Bar
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn').forEach(b => {
+          b.classList.remove('text-gold-600', 'dark:text-gold-400');
+          b.classList.add('text-stone-400');
+        });
+        btn.classList.remove('text-stone-400');
+        btn.classList.add('text-gold-600', 'dark:text-gold-400');
+
+        const target = btn.dataset.target;
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        document.getElementById(target).classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+
+    document.getElementById('prevPageBtn').addEventListener('click', () => {
+      if (currentPage > 1) { currentPage--; renderJamaahList(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    });
+    document.getElementById('nextPageBtn').addEventListener('click', () => {
+      const totalPages = Math.ceil(filteredList.length / pageSize);
+      if (currentPage < totalPages) { currentPage++; renderJamaahList(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    });
+
+    let searchTimeout = null;
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      const val = e.target.value;
+      document.getElementById('clearSearchBtn').classList.toggle('hidden', !val);
+      searchTimeout = setTimeout(() => { applyFilters(); }, 250);
+    });
+
+    document.getElementById('clearSearchBtn').addEventListener('click', () => {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('clearSearchBtn').classList.add('hidden');
+      applyFilters();
+    });
+
+    document.getElementById('filterBank').addEventListener('change', applyFilters);
+    document.getElementById('filterGender').addEventListener('change', applyFilters);
+    document.getElementById('filterYear').addEventListener('change', applyFilters);
+    document.getElementById('filterMonth').addEventListener('change', applyFilters);
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      renderCharts();
+    });
+
+    window.addEventListener('DOMContentLoaded', initLoad);
+  </script>
+</body>
+</html>
